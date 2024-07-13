@@ -289,6 +289,9 @@ if (envg$PARAM$lag3) {
     dataset[, paste0(vcol, "_delta3") := get(vcol) - get(paste0(vcol, "_lag3"))]
   }
 
+  # Elimino las columnas de los lags, solo dejo los delta lags
+  dataset[, paste0(cols_lagueables, "_lag3") := NULL]
+  
   envg$OUTPUT$lag3$ncol_despues <- ncol(dataset)
   GrabarOutput()
   cat( "Fin lag3\n")
