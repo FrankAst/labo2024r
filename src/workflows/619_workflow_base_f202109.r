@@ -149,7 +149,7 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$ratiomax <- FALSE
   param_local$Tendencias1$ema <- FALSE
   param_local$Tendencias1$bbwp <- FALSE
-  param_local$Tendencias1$bbwp_ventana <- FALSE
+  param_local$Tendencias1$bbwp_ventana <- 5
 
   # no me engraso las manos con las tendencias de segundo orden
   param_local$Tendencias2$run <- FALSE
@@ -162,7 +162,7 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias2$ratiomax <- FALSE
   param_local$Tendencias2$ema <- FALSE
   param_local$Tendencias2$bbwp <- FALSE
-  param_local$Tendencias2$bbwp_ventana <- FALSE
+  param_local$Tendencias2$bbwp_ventana <- 5
 
   param_local$semilla <- NULL # no usa semilla, es deterministico
 

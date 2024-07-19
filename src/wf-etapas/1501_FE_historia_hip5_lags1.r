@@ -233,7 +233,7 @@ TendenciaYmuchomas <- function(
   
   # creo el vector_desde que indica cada ventana
   # de esta forma se acelera el procesamiento ya que lo hago una sola vez
-  vector_ids <- dataset[ ,"cliente" ]
+  vector_ids <- dataset[ , get( envg$PARAM$dataset_metadata$entity_id) ]
   
   vector_desde <- seq(
     -ventana_regresion + 2,
@@ -254,7 +254,7 @@ TendenciaYmuchomas <- function(
   }
   
   # Si BBWP es TRUE, calculo un nuevo vector desde con su ventana correspondiente
-  if(BBWP){
+  if(bbwp){
     
     vector_desde_bbwp <- seq(
       -bbwp_ventana + 2,
