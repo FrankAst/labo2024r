@@ -159,7 +159,7 @@ cppFunction("NumericVector fBBWP(
   
   for(int i = 0; i < n; i++)
   {
-    Rcpp::Rcout << \"Iteration i: \" << i << std::endl;
+    //Rcpp::Rcout << \"Iteration i: \" << i << std::endl;
 
     int  libre    = 0 ;
   
@@ -167,7 +167,7 @@ cppFunction("NumericVector fBBWP(
     {
        double a = pcolumna[j] ;
        
-       Rcpp::Rcout << \"  Inner loop j: \" << j << \", a: \" << a << std::endl;
+       //Rcpp::Rcout << \"  Inner loop j: \" << j << \", a: \" << a << std::endl;
 
        if( !R_IsNA( a ) )
        {
@@ -225,6 +225,9 @@ TendenciaYmuchomas <- function(
   # Esta es la cantidad de meses que utilizo para la historia
   ventana_regresion <- ventana
 
+  # Verifico parametros
+  cat("BBWP", bbwp)
+  cat("bbwp ventana", bbwp_ventana)
 
   # Coeficiente de suavizado EMA: cuanto mas chico mejor suaviza, pero 
   # mas atrasa la tendencia
@@ -465,6 +468,11 @@ if (envg$PARAM$lag3) {
 cat( "ordenado dataset\n")
 setorderv(dataset, envg$PARAM$dataset_metadata$primarykey)
 
+# Verifico parametros globales
+cat("Ema global: ", envg$PARAM$Tendencias1$ema)
+cat("bbwp global:", envg$PARAM$Tendencias1$bbwp)
+cat("bbwp ventana global:", envg$PARAM$Tendencias1$bbwp_ventana)
+
 cols_lagueables <- intersect(cols_lagueables, colnames(dataset))
 if (envg$PARAM$Tendencias1$run) {
   envg$OUTPUT$TendenciasYmuchomas1$ncol_antes <- ncol(dataset)
@@ -479,7 +487,7 @@ if (envg$PARAM$Tendencias1$run) {
     ratiomax = envg$PARAM$Tendencias1$ratiomax,
     ema = envg$PARAM$Tendencias1$ema,
     bbwp = envg$PARAM$Tendencias1$bbwp,
-    bbwp_ventana = envg$Tendencias1$bbwp_ventana
+    bbwp_ventana = envg$PARAM$Tendencias1$bbwp_ventana
   )
 
   envg$OUTPUT$TendenciasYmuchomas1$ncol_despues <- ncol(dataset)
@@ -501,7 +509,7 @@ if (envg$PARAM$Tendencias2$run) {
     ratiomax = envg$PARAM$Tendencias2$ratiomax,
     ema = envg$PARAM$Tendencias2$ema,
     bbwp = envg$PARAM$Tendencias2$bbwp,
-    bbwp_ventana = envg$Tendencias2$bbwp_ventana
+    bbwp_ventana = envg$PARAM$Tendencias2$bbwp_ventana
   )
 
   envg$OUTPUT$TendenciasYmuchomas2$ncol_despues <- ncol(dataset)
