@@ -135,20 +135,20 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/1501_FE_historia_frank.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- FALSE
-  param_local$lag3 <- FALSE
+  param_local$lag2 <- TRUE
+  param_local$lag3 <- TRUE
 
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
   param_local$Tendencias1$ventana <- 6
-  param_local$Tendencias1$tendencia <- FALSE
+  param_local$Tendencias1$tendencia <- TRUE
   param_local$Tendencias1$minimo <- FALSE
   param_local$Tendencias1$maximo <- FALSE
   param_local$Tendencias1$promedio <- FALSE
   param_local$Tendencias1$ratioavg <- FALSE
   param_local$Tendencias1$ratiomax <- FALSE
-  param_local$Tendencias1$ema <- TRUE
-  param_local$Tendencias1$bbwp <- TRUE
+  param_local$Tendencias1$ema <- FALSE
+  param_local$Tendencias1$bbwp <- FALSE
   param_local$Tendencias1$bbwp_ventana <- 5
 
   # no me engraso las manos con las tendencias de segundo orden
@@ -165,11 +165,6 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias2$bbwp_ventana <- 5
 
   param_local$semilla <- NULL # no usa semilla, es deterministico
-
-  # Verifico parametros locales:all.names
-  cat("ema local:" , param_local$Tendencias1$ema )
-  cat("bbwp local:", param_local$Tendencias1$bbwp)
-  cat("bbpw ventana local:", param_local$Tendencias1$bbwp_ventana)
 
   return( exp_correr_script( param_local ) ) # linea fija
 }

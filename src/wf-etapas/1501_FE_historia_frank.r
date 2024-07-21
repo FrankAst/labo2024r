@@ -399,7 +399,7 @@ if (envg$PARAM$lag1) {
   }
 
   # Elimino las columnas de los lags, solo dejo los delta lags
-  dataset[, paste0(cols_lagueables, "_lag1") := NULL]
+  #dataset[, paste0(cols_lagueables, "_lag1") := NULL]
  
 
   envg$OUTPUT$lag1$ncol_despues <- ncol(dataset)
@@ -427,7 +427,7 @@ if (envg$PARAM$lag2) {
   }
 
   # Elimino las columnas de los lags, solo dejo los delta lags
-  dataset[, paste0(cols_lagueables, "_lag2") := NULL]
+  #dataset[, paste0(cols_lagueables, "_lag2") := NULL]
 
   envg$OUTPUT$lag2$ncol_despues <- ncol(dataset)
   GrabarOutput()
@@ -452,7 +452,7 @@ if (envg$PARAM$lag3) {
   }
 
   # Elimino las columnas de los lags, solo dejo los delta lags
-  dataset[, paste0(cols_lagueables, "_lag3") := NULL]
+  #dataset[, paste0(cols_lagueables, "_lag3") := NULL]
   
   envg$OUTPUT$lag3$ncol_despues <- ncol(dataset)
   GrabarOutput()
