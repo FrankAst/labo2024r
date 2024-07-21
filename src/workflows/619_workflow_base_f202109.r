@@ -166,6 +166,11 @@ FEhist_base <- function( pinputexps)
 
   param_local$semilla <- NULL # no usa semilla, es deterministico
 
+  # Verifico parametros locales:all.names
+  cat("ema local:" , param_local$Tendencias1$ema )
+  cat("bbwp local:", param_local$Tendencias1$bbwp)
+  cat("bbpw ventana local:", param_local$Tendencias1$bbwp_ventana)
+
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
