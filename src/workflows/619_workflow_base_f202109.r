@@ -140,16 +140,16 @@ FEhist_base <- function( pinputexps)
 
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
-  param_local$Tendencias1$ventana <- 3
-  param_local$Tendencias1$tendencia <- FALSE
+  param_local$Tendencias1$ventana <- 6
+  param_local$Tendencias1$tendencia <- TRUE
   param_local$Tendencias1$minimo <- FALSE
   param_local$Tendencias1$maximo <- FALSE
   param_local$Tendencias1$promedio <- FALSE
   param_local$Tendencias1$ratioavg <- FALSE
   param_local$Tendencias1$ratiomax <- FALSE
-  param_local$Tendencias1$ema <- TRUE
-  param_local$Tendencias1$bbwp <- TRUE
-  param_local$Tendencias1$bbwp_ventana <- 6
+  param_local$Tendencias1$ema <- FALSE
+  param_local$Tendencias1$bbwp <- FALSE
+  param_local$Tendencias1$bbwp_ventana <- 5
 
   # no me engraso las manos con las tendencias de segundo orden
   param_local$Tendencias2$run <- FALSE
