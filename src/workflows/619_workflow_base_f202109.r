@@ -136,19 +136,19 @@ FEhist_base <- function( pinputexps)
 
   param_local$lag1 <- TRUE
   param_local$lag2 <- TRUE
-  param_local$lag3 <- TRUE
+  param_local$lag3 <- FALSE
 
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
   param_local$Tendencias1$ventana <- 6
-  param_local$Tendencias1$tendencia <- TRUE
+  param_local$Tendencias1$tendencia <- FALSE
   param_local$Tendencias1$minimo <- FALSE
   param_local$Tendencias1$maximo <- FALSE
   param_local$Tendencias1$promedio <- FALSE
   param_local$Tendencias1$ratioavg <- FALSE
   param_local$Tendencias1$ratiomax <- FALSE
-  param_local$Tendencias1$ema <- FALSE
-  param_local$Tendencias1$bbwp <- FALSE
+  param_local$Tendencias1$ema <- TRUE
+  param_local$Tendencias1$bbwp <- TRUE
   param_local$Tendencias1$bbwp_ventana <- 5
 
   # no me engraso las manos con las tendencias de segundo orden
@@ -437,7 +437,7 @@ wf_septiembre <- function( pnombrewf )
   ts9 <- TS_strategy_base9()
   ht <- HT_tuning_base()
 
-  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=5 )
+  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas= 50 )
   SC_scoring( c(fm, ts9) )
   KA_evaluate_kaggle()
 
