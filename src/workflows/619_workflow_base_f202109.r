@@ -134,6 +134,10 @@ FEhist_base <- function( pinputexps)
 
   param_local$meta$script <- "/src/wf-etapas/1501_FE_historia_frank.r"
 
+
+  
+  
+  # Agrego Lags de variables base:
   param_local$lag1 <- FALSE
   param_local$lag2 <- TRUE
   param_local$lag3 <- TRUE
@@ -146,10 +150,13 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$maximo <- FALSE
   param_local$Tendencias1$promedio <- FALSE
   param_local$Tendencias1$ratioavg <- FALSE
-  param_local$Tendencias1$ratiomax <- FALSE
+  param_local$Tendencias1$ratiomax <- TRUE
   param_local$Tendencias1$ema <- TRUE
   param_local$Tendencias1$bbwp <- TRUE
-  param_local$Tendencias1$bbwp_ventana <- 5
+  param_local$Tendencias1$bbwp_ventana <- 7
+
+  # Agrego delta Lags de 2do orden para tendencias seleccionadas:
+  param_local$delta_lags2_ema<- TRUE
 
   # no me engraso las manos con las tendencias de segundo orden
   param_local$Tendencias2$run <- FALSE

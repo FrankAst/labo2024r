@@ -372,6 +372,7 @@ campitos <- c( envg$PARAM$dataset_metadata$primarykey,
 
 campitos <- unique( campitos )
 
+
 cols_lagueables <- copy(setdiff(
   colnames(dataset),
   envg$PARAM$dataset_metadata
@@ -382,6 +383,7 @@ cols_lagueables <- copy(setdiff(
 # ordeno dataset
 setorderv(dataset, envg$PARAM$dataset_metadata$primarykey)
 
+# Lags variables bases:
 
 if (envg$PARAM$lag1) {
   cat( "Inicio lag1\n")
@@ -406,8 +408,6 @@ if (envg$PARAM$lag1) {
   GrabarOutput()
   cat( "Fin lag1\n")
 }
-
-
 
 
 cols_lagueables <- intersect(cols_lagueables, colnames(dataset))
@@ -494,6 +494,51 @@ if (envg$PARAM$Tendencias1$run) {
   GrabarOutput()
 }
 
+# Introduzco delta-lags 2do orden para tendencias seleccionadas. 
+
+if (envg$PARAM$delta_lags2_ema) {
+  cat( "Inicio delta lags 2do orden para ema\n")
+
+  # Selecciono columnas de tendencias:
+  patron <- "_ema"
+  tend_cols <- grep(patron, names(dataset), value = TRUE)
+
+  # creo los campos lags 
+  envg$OUTPUT$delta2tend$ncol_antes <- ncol(dataset)
+  dataset[, paste0(tend_cols, "_lag2") := shift(.SD, 2, NA, "lag"),
+    by = eval(envg$PARAM$dataset_metadata$entity_id),
+    .SDcols = tend_cols
+  ]
+
+  # agrego los delta lags de orden 3
+  for (vcol in tend_cols)
+  {
+    dataset[, paste0(vcol, "_delta2") := get(vcol) - get(paste0(vcol, "_lag2"))]
+  }
+
+  # Elimino las columnas de los lags, solo dejo los delta lags
+  dataset[, paste0(tend_cols, "_lag2") := NULL]
+  
+  envg$OUTPUT$delta2tend$ncol_despues <- ncol(dataset)
+  GrabarOutput()
+  cat( "Fin delta lags 2do orden - para ema\n")
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Tendencias 2do orden
 
 cols_lagueables <- intersect(cols_lagueables, colnames(dataset))
 if (envg$PARAM$Tendencias2$run) {
@@ -515,6 +560,29 @@ if (envg$PARAM$Tendencias2$run) {
   envg$OUTPUT$TendenciasYmuchomas2$ncol_despues <- ncol(dataset)
   GrabarOutput()
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #------------------------------------------------------------------------------
 # grabo el dataset
