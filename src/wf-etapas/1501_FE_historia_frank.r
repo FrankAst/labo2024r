@@ -510,7 +510,7 @@ if (envg$PARAM$delta_lags2_ema) {
     .SDcols = tend_cols
   ]
 
-  # agrego los delta lags de orden 3
+  # agrego los delta lags de orden 2
   for (vcol in tend_cols)
   {
     dataset[, paste0(vcol, "_delta2") := get(vcol) - get(paste0(vcol, "_lag2"))]
@@ -523,19 +523,6 @@ if (envg$PARAM$delta_lags2_ema) {
   GrabarOutput()
   cat( "Fin delta lags 2do orden - para ema\n")
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # Tendencias 2do orden
@@ -560,27 +547,6 @@ if (envg$PARAM$Tendencias2$run) {
   envg$OUTPUT$TendenciasYmuchomas2$ncol_despues <- ncol(dataset)
   GrabarOutput()
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
