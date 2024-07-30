@@ -131,23 +131,29 @@ FEhist_base <- function( pinputexps)
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
+  param_local$meta$script <- "/src/wf-etapas/1501_FE_historia_frank.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
-  param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
+  param_local$lag2 <- TRUE 
+  param_local$lag3 <- FALSE
 
-  # no me engraso las manos con las tendencias
+  
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
-  param_local$Tendencias1$ventana <- 6
-  param_local$Tendencias1$tendencia <- TRUE
+  param_local$Tendencias1$ventana <- 5
+  param_local$Tendencias1$tendencia <- FALSE
   param_local$Tendencias1$minimo <- FALSE
   param_local$Tendencias1$maximo <- FALSE
   param_local$Tendencias1$promedio <- FALSE
   param_local$Tendencias1$ratioavg <- FALSE
   param_local$Tendencias1$ratiomax <- FALSE
+  param_local$Tendencias1$ema <- TRUE
+  param_local$Tendencias1$bbwp <- TRUE
+  param_local$Tendencias1$bbwp_ventana <- 7
 
-  # no me engraso las manos con las tendencias de segundo orden
+  # Agrego delta Lags de 2do orden para tendencias seleccionadas:
+  param_local$delta_lags2_ema<- TRUE
+
+
   param_local$Tendencias2$run <- FALSE
   param_local$Tendencias2$ventana <- 12
   param_local$Tendencias2$tendencia <- FALSE
@@ -180,10 +186,10 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
   # parametros para que LightGBM se comporte como Random Forest
   param_local$lgb_param <- list(
     # parametros que se pueden cambiar
-    num_iterations = 20,
-    num_leaves  = 16,
-    min_data_in_leaf = 1000,
-    feature_fraction_bynode  = 0.2,
+    num_iterations = 55,
+    num_leaves  = 45,
+    min_data_in_leaf = 150,
+    feature_fraction_bynode  = 0.1,
 
     # para que LightGBM emule Random Forest
     boosting = "rf",
@@ -266,13 +272,13 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(202107, 202106, 202105, 202104, 202103, 202102,
-    202101, 202012, 202011)
+    202101, 202002, 202001,201912,201911,201910,201909,201908,201907,201906,201905)
 
 
-  param_local$train$training <- c(202105, 202104, 202103, 202102, 202101,
-    202012, 202011, 202010, 202009)
-  param_local$train$validation <- c(202106)
-  param_local$train$testing <- c(202107)
+  param_local$train$training <- c(202103, 202102, 202101,
+     202002, 202001,201912,201911,201910,201909,201908,201907,201906,201905)
+  param_local$train$validation <- c(202104)
+  param_local$train$testing <- c(202107, 202106, 202105)
 
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
@@ -427,17 +433,17 @@ wf_septiembre <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   DT_incorporar_dataset_competencia2024()
-  CA_catastrophe_base( metodo="MachineLearning")
+  CA_catastrophe_base( metodo="Ninguno")
   FEintra_manual_base()
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
   FErf_attributes_base()
-  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  CN_canaritos_asesinos_base(ratio=0.2, desvio=-1.5)
 
   ts9 <- TS_strategy_base9()
   ht <- HT_tuning_epic()
 
-  fm <- FM_final_models_lightgbm_semillerio( c(ht, ts9), ranks=c(1), semillerio=20, repeticiones_exp=1 )
+  fm <- FM_final_models_lightgbm_semillerio( c(ht, ts9), ranks=c(1), semillerio=20, repeticiones_exp=3 )
   SC_scoring_semillerio( c(fm, ts9) )
   KA_evaluate_kaggle_semillerio()
 
