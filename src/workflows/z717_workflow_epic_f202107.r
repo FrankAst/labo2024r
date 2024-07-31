@@ -278,13 +278,13 @@ TS_strategy_base7 <- function( pinputexps )
 
   param_local$train$training <- c(202103, 202102, 202101,202002, 202001,201912,201911,201910,201909,
       201908,201907,201906,201905, 201904, 201903, 201902)
-    )
+    
   param_local$train$validation <- c(202104)
   param_local$train$testing <- c(202105)
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.2
+  param_local$train$undersampling <- 0.4
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -326,10 +326,10 @@ HT_tuning_epic <- function( pinputexps, bypass=FALSE)
     force_row_wise = TRUE, # para reducir warnings
     verbosity = -100,
     max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
-    min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
+    min_gain_to_split = c(0,10), # min_gain_to_split >= 0.0
     min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
-    lambda_l1 = 0.0, # lambda_l1 >= 0.0
-    lambda_l2 = 0.0, # lambda_l2 >= 0.0
+    lambda_l1 = c(0,800), # lambda_l1 >= 0.0
+    lambda_l2 = c(0,800), # lambda_l2 >= 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
     num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
 
@@ -440,12 +440,12 @@ wf_julio <- function( pnombrewf )
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
   FErf_attributes_base()
-  CN_canaritos_asesinos_base(ratio=0.2, desvio=-1.5)
+  CN_canaritos_asesinos_base(ratio=0.2, desvio=-0.5)
 
   ts7 <- TS_strategy_base7()
   ht <- HT_tuning_epic()
 
-  fm <- FM_final_models_lightgbm_semillerio( c(ht, ts7), ranks=c(1), semillerio=20, repeticiones_exp=3 )
+  fm <- FM_final_models_lightgbm_semillerio( c(ht, ts7), ranks=c(1), semillerio=40, repeticiones_exp=6 )
   SC_scoring_semillerio( c(fm, ts7) )
   EV_evaluate_conclase_gan_semillerio()
 
