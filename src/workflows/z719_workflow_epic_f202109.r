@@ -135,30 +135,30 @@ FEhist_base <- function( pinputexps)
 
   param_local$lag1 <- TRUE
   param_local$lag2 <- TRUE 
-  param_local$lag3 <- FALSE
+  param_local$lag3 <- TRUE
 
   
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
   param_local$Tendencias1$ventana <- 5
-  param_local$Tendencias1$tendencia <- FALSE
+  param_local$Tendencias1$tendencia <- TRUE
   param_local$Tendencias1$minimo <- FALSE
-  param_local$Tendencias1$maximo <- FALSE
+  param_local$Tendencias1$maximo <- TRUE
   param_local$Tendencias1$promedio <- FALSE
   param_local$Tendencias1$ratioavg <- FALSE
-  param_local$Tendencias1$ratiomax <- FALSE
+  param_local$Tendencias1$ratiomax <- TRUE
   param_local$Tendencias1$ema <- TRUE
   param_local$Tendencias1$bbwp <- TRUE
-  param_local$Tendencias1$bbwp_ventana <- 7
+  param_local$Tendencias1$bbwp_ventana <- 9
 
   # Agrego delta Lags de 2do orden para tendencias seleccionadas:
-  param_local$delta_lags2_ema<- TRUE
+  param_local$delta_lags2_ema <- TRUE
 
 
-  param_local$Tendencias2$run <- FALSE
-  param_local$Tendencias2$ventana <- 12
+  param_local$Tendencias2$run <- TRUE
+  param_local$Tendencias2$ventana <- 7
   param_local$Tendencias2$tendencia <- FALSE
   param_local$Tendencias2$minimo <- FALSE
-  param_local$Tendencias2$maximo <- FALSE
+  param_local$Tendencias2$maximo <- TRUE
   param_local$Tendencias2$promedio <- FALSE
   param_local$Tendencias2$ratioavg <- FALSE
   param_local$Tendencias2$ratiomax <- FALSE
@@ -309,7 +309,7 @@ HT_tuning_epic <- function( pinputexps, bypass=FALSE)
   param_local$train$gan0 <-  -3000
   param_local$train$meseta <- 2001
   param_local$train$repeticiones_exp <- 1
-  param_local$train$semillerio <- 1  # 1 es no usar semillerio en la Bayesian Optimi
+  param_local$train$semillerio <- 60  # 1 es no usar semillerio en la Bayesian Optimi
 
   # Hiperparametros  del LightGBM
   #  los que tienen un solo valor son los que van fijos
@@ -325,12 +325,12 @@ HT_tuning_epic <- function( pinputexps, bypass=FALSE)
     force_row_wise = TRUE, # para reducir warnings
     verbosity = -100,
     max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
-    min_gain_to_split = c(0,10), # min_gain_to_split >= 0.0
+    min_gain_to_split = 0, # min_gain_to_split >= 0.0
     min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
-    lambda_l1 = c(0,800), # lambda_l1 >= 0.0
-    lambda_l2 = c(0,800), # lambda_l2 >= 0.0
+    lambda_l1 = 0, # lambda_l1 >= 0.0
+    lambda_l2 = 0, # lambda_l2 >= 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
-    num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
+    num_iterations = 3000, # un numero muy grande, lo limita early_stopping_rounds
 
     bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
@@ -344,10 +344,10 @@ HT_tuning_epic <- function( pinputexps, bypass=FALSE)
 
     extra_trees = FALSE,
     # Parte variable
-    learning_rate = c( 0.01, 0.3 ),
-    feature_fraction = c( 0.05, 0.9 ),
+    learning_rate = c( 0.01, 1 ),
+    feature_fraction = c( 0.05, 0.1 ),
 
-    leaf_size_log = c( -14, -2),   # deriva en min_data_in_leaf
+    leaf_size_log = c( -8, -2),   # deriva en min_data_in_leaf
     coverage_log = c( -8, 0 )      # deriva en num_leaves
   )
 
@@ -437,13 +437,14 @@ wf_septiembre <- function( pnombrewf )
   FEintra_manual_base()
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
+  CN_canaritos_asesinos_base(ratio=0.2, desvio=0.5)
   FErf_attributes_base()
-  CN_canaritos_asesinos_base(ratio=0.2, desvio=-0.5)
+  CN_canaritos_asesinos_base(ratio=0.2, desvio=0.5)
 
   ts9 <- TS_strategy_base9()
   ht <- HT_tuning_epic()
 
-  fm <- FM_final_models_lightgbm_semillerio( c(ht, ts9), ranks=c(1), semillerio=40, repeticiones_exp=6 )
+  fm <- FM_final_models_lightgbm_semillerio( c(ht, ts9), ranks=c(1), semillerio=60, repeticiones_exp=6 )
   SC_scoring_semillerio( c(fm, ts9) )
   KA_evaluate_kaggle_semillerio()
 
