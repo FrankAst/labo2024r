@@ -141,7 +141,7 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
   param_local$Tendencias1$ventana <- 5
   param_local$Tendencias1$tendencia <- TRUE
-  param_local$Tendencias1$minimo <- FALSE
+  param_local$Tendencias1$minimo <- TRUE
   param_local$Tendencias1$maximo <- TRUE
   param_local$Tendencias1$promedio <- FALSE
   param_local$Tendencias1$ratioavg <- FALSE
@@ -154,7 +154,7 @@ FEhist_base <- function( pinputexps)
   param_local$delta_lags2_ema <- TRUE
 
 
-  param_local$Tendencias2$run <- TRUE
+  param_local$Tendencias2$run <- FALSE
   param_local$Tendencias2$ventana <- 7
   param_local$Tendencias2$tendencia <- FALSE
   param_local$Tendencias2$minimo <- FALSE
@@ -272,18 +272,18 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(202107, 202106, 202105, 202104, 202103, 202102,
-    202101, 202002, 202001,201912,201911,201910,201909,201908,201907,201906,201905)
+    202101, 202002, 202001,201912,201911,201910,201909,201908,201907,201906,201905,201904,201903,201902,201901)
 
 
   param_local$train$training <- c(202103, 202102, 202101,
-     202002, 202001,201912,201911,201910,201909,201908,201907,201906,201905)
+     202002, 202001,201912,201911,201910,201909,201908,201907,201906,201905,201904,201903,201902,201901)
   param_local$train$validation <- c(202104)
   param_local$train$testing <- c(202107, 202106, 202105)
 
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.4
+  param_local$train$undersampling <- 0.6
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -309,7 +309,7 @@ HT_tuning_epic <- function( pinputexps, bypass=FALSE)
   param_local$train$gan0 <-  -3000
   param_local$train$meseta <- 2001
   param_local$train$repeticiones_exp <- 1
-  param_local$train$semillerio <- 60  # 1 es no usar semillerio en la Bayesian Optimi
+  param_local$train$semillerio <- 25  # 1 es no usar semillerio en la Bayesian Optimi
 
   # Hiperparametros  del LightGBM
   #  los que tienen un solo valor son los que van fijos
@@ -330,7 +330,7 @@ HT_tuning_epic <- function( pinputexps, bypass=FALSE)
     lambda_l1 = 0, # lambda_l1 >= 0.0
     lambda_l2 = 0, # lambda_l2 >= 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
-    num_iterations = 3000, # un numero muy grande, lo limita early_stopping_rounds
+    num_iterations = 5000, # un numero muy grande, lo limita early_stopping_rounds
 
     bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
@@ -344,10 +344,10 @@ HT_tuning_epic <- function( pinputexps, bypass=FALSE)
 
     extra_trees = FALSE,
     # Parte variable
-    learning_rate = c( 0.01, 1 ),
-    feature_fraction = c( 0.05, 0.1 ),
+    learning_rate = c( 0.01, 2 ),
+    feature_fraction = c( 0.05, 0.2 ),
 
-    leaf_size_log = c( -8, -2),   # deriva en min_data_in_leaf
+    leaf_size_log = c( -14, -2),   # deriva en min_data_in_leaf
     coverage_log = c( -8, 0 )      # deriva en num_leaves
   )
 
@@ -437,14 +437,14 @@ wf_septiembre <- function( pnombrewf )
   FEintra_manual_base()
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
-  CN_canaritos_asesinos_base(ratio=0.2, desvio=0.5)
+  CN_canaritos_asesinos_base(ratio=0.2, desvio=3)
   FErf_attributes_base()
-  CN_canaritos_asesinos_base(ratio=0.2, desvio=0.5)
+  CN_canaritos_asesinos_base(ratio=0.2, desvio=1.5)
 
   ts9 <- TS_strategy_base9()
   ht <- HT_tuning_epic()
 
-  fm <- FM_final_models_lightgbm_semillerio( c(ht, ts9), ranks=c(1), semillerio=60, repeticiones_exp=6 )
+  fm <- FM_final_models_lightgbm_semillerio( c(ht, ts9), ranks=c(1), semillerio=50, repeticiones_exp=6 )
   SC_scoring_semillerio( c(fm, ts9) )
   KA_evaluate_kaggle_semillerio()
 
